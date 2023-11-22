@@ -1,88 +1,93 @@
 import { hitShipModel, selectCell, startGameModel } from './inquirerHelper';
-import { GameBoard } from './gameBord';
-import { Coordinate } from '../types/playerData';
+
+import { Coordinates } from '../types/playerData';
 import chalk from 'chalk';
+import { calculateBoardIndex } from '../utils/calculateBoardIndex';
+import { GameBoard } from './gameBord';
+import { displayBoard } from '../utils/displayBoard';
 
-async function handlePlayer(isFirstPlayer: boolean): Promise<string[][]> {
-  await startGameModel(isFirstPlayer);
+export class GameHelper {
+  private firstPlayerBoard: string[][];
+  private secondPlayerBoard: string[][];
+  private isFirstTurn: boolean;
 
-  const board = new GameBoard(isFirstPlayer);
+  constructor() {
+    this.isFirstTurn = true;
+  }
 
-  board.displayBoard();
+  private async handlePlayerBoard(isFirstPlayer: boolean): Promise<string[][]> {
+    await startGameModel(isFirstPlayer);
 
-  const answers = await selectCell(isFirstPlayer);
-  console.log(
-    `You selected row ${answers.row}, column ${answers.column.toUpperCase()}`,
-  );
+    const board = new GameBoard(isFirstPlayer);
 
-  board.updateGameBoard(answers);
+    board.displayBoard();
 
-  return board.displayBoard();
-}
+    const answers = await selectCell(isFirstPlayer);
 
-export async function gameProcess() {
-  const firstPlayerBoard = await handlePlayer(true);
+    console.log(
+      `You selected row ${answers.row}, column ${answers.column.toUpperCase()}`,
+    );
 
-  const secondPlayerBoard = await handlePlayer(false);
+    board.updateGameBoard(answers);
 
-  let first = true;
-  let hitShip = false;
+    return board.displayBoard();
+  }
 
-  while (!hitShip) {
-    const coordinates = await hitShipModel(first);
-    const board = first ? secondPlayerBoard : firstPlayerBoard;
-    hitShip = await hitProcess(board, first, coordinates);
-    if (!hitShip) {
-      first = !first;
+  public async gameProcess() {
+    this.firstPlayerBoard = await this.handlePlayerBoard(true);
+    this.secondPlayerBoard = await this.handlePlayerBoard(false);
+
+    let hitShip = false;
+
+    while (!hitShip) {
+      const coordinates = await hitShipModel(this.isFirstTurn);
+      const board = this.isFirstTurn
+        ? this.secondPlayerBoard
+        : this.firstPlayerBoard;
+      hitShip = await this.hitProcess(board, this.isFirstTurn, coordinates);
+      if (!hitShip) {
+        this.isFirstTurn = !this.isFirstTurn;
+      }
     }
   }
-}
 
-function isHit(
-  coordinate: Coordinate,
-  board: string[][],
-  first: boolean,
-): boolean {
-  const columnIndex = coordinate.column.charCodeAt(0) - 'A'.charCodeAt(0) + 1;
-  const rowIndex = parseInt(coordinate.row);
+  private isHit(
+    coordinate: Coordinates,
+    board: string[][],
+    first: boolean,
+  ): boolean {
+    const { columnIndex, rowIndex } = calculateBoardIndex(coordinate);
 
-  if (first) {
-    if (board[rowIndex][columnIndex] !== chalk.green('X')) {
-      board[rowIndex][columnIndex] = chalk.red('0');
-      return false;
+    if (first) {
+      if (board[rowIndex][columnIndex] !== chalk.green('X')) {
+        board[rowIndex][columnIndex] = chalk.red('0');
+        return false;
+      } else {
+        return true;
+      }
     } else {
-      return true;
+      if (board[rowIndex][columnIndex] !== chalk.green('X')) {
+        board[rowIndex][columnIndex] = chalk.red('0');
+        return false;
+      } else {
+        return true;
+      }
     }
-  } else {
-    if (board[rowIndex][columnIndex] !== chalk.green('X')) {
-      board[rowIndex][columnIndex] = chalk.red('0');
-      return false;
+  }
+
+  private async hitProcess(
+    board: string[][],
+    isFirst: boolean,
+    coordinates: Coordinates,
+  ): Promise<boolean> {
+    const hit = this.isHit(coordinates, board, isFirst);
+    displayBoard(board);
+
+    if (hit) {
+      console.log(chalk.green('Woohoo YOU WON'));
     } else {
-      return true;
+      console.log(chalk.yellow('You missed (('));
     }
+    return hit;
   }
-}
-
-function generalDisplayBoard(board: string[][]): string[][] {
-  board.forEach((row) => {
-    console.log(row.join(' '));
-  });
-  return board;
-}
-
-export async function hitProcess(
-  board: any,
-  isFirst: boolean,
-  coordinates: Coordinate,
-): Promise<boolean> {
-  const hit = isHit(coordinates, board, isFirst);
-
-  generalDisplayBoard(board);
-
-  if (hit) {
-    console.log(chalk.green('Woohoo YOU WON'));
-  } else {
-    console.log(chalk.yellow('You missed (('));
-  }
-  return hit;
 }

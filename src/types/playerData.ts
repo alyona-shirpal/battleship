@@ -1,9 +1,9 @@
-export interface Coordinate {
+export interface Coordinates {
   row: string;
   column: string;
 }
 
 export interface PlayerData {
   name: string;
-  coordinates: Coordinate;
+  coordinates: Coordinates;
 }

@@ -1,5 +1,7 @@
-import { Coordinate } from '../types/playerData';
+import { Coordinates } from '../types/playerData';
 import chalk from 'chalk';
+import { calculateBoardIndex } from '../utils/calculateBoardIndex';
+import { displayBoard } from '../utils/displayBoard';
 
 export class GameBoard {
   private firstBoard: string[][];
@@ -27,21 +29,14 @@ export class GameBoard {
 
   public displayBoard(): string[][] {
     if (this.isFirstPlayer) {
-      this.firstBoard.forEach((row) => {
-        console.log(row.join(' '));
-      });
-      return this.firstBoard;
+      return displayBoard(this.firstBoard);
     } else {
-      this.secondBord.forEach((row) => {
-        console.log(row.join(' '));
-      });
-      return this.secondBord;
+      return displayBoard(this.secondBord);
     }
   }
 
-  public updateGameBoard(coordinate: Coordinate) {
-    const columnIndex = coordinate.column.charCodeAt(0) - 'A'.charCodeAt(0) + 1;
-    const rowIndex = parseInt(coordinate.row);
+  public updateGameBoard(coordinate: Coordinates) {
+    const { columnIndex, rowIndex } = calculateBoardIndex(coordinate);
 
     this.isFirstPlayer
       ? (this.firstBoard[rowIndex][columnIndex] = chalk.green('X'))

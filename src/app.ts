@@ -1,5 +1,6 @@
-import { gameProcess } from './helpers/gameHelper';
+import { GameHelper } from './helpers/gameHelper';
 
 (async () => {
-  await gameProcess();
+  const game = new GameHelper();
+  await game.gameProcess();
 })();

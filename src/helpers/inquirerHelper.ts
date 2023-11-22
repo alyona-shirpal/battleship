@@ -1,8 +1,8 @@
 import inquirer from 'inquirer';
-import { Coordinate, PlayerData } from '../types/playerData';
+import { Coordinates, PlayerData } from '../types/playerData';
 import { Message } from '../types/message.enum';
 
-export async function selectCell(isFirst: boolean): Promise<Coordinate> {
+export async function selectCell(isFirst: boolean): Promise<Coordinates> {
   return inquirer.prompt([
     {
       type: 'input',
@@ -22,7 +22,7 @@ export async function selectCell(isFirst: boolean): Promise<Coordinate> {
   ]);
 }
 
-export function startGameModel(
+export async function startGameModel(
   firstPlayer: boolean,
 ): Promise<Pick<PlayerData, 'name'>> {
   return inquirer.prompt([
@@ -36,7 +36,7 @@ export function startGameModel(
   ]);
 }
 
-export async function hitShipModel(isFirst: boolean): Promise<Coordinate> {
+export async function hitShipModel(isFirst: boolean): Promise<Coordinates> {
   return inquirer.prompt([
     {
       type: 'input',
