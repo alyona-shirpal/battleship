@@ -13,7 +13,7 @@ import chalk from 'chalk';
     const data = await redisService.getData();
 
     if (data.isOver === true) {
-      console.log(chalk.underline.blue('The previous game is over!'));
+      console.log(chalk.blue('The previous game is over!'));
 
       await gameHelper.gameProcess();
     }
