@@ -3,7 +3,7 @@ export interface Coordinates {
   column: string;
 }
 
-export interface PlayerData {
+export interface PlayerDataInterface {
   name: string;
   coordinates: Coordinates;
 }

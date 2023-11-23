@@ -1,4 +1,4 @@
-import { Coordinates } from '../types/playerData';
+import { Coordinates } from '../types/interfaces/playerData.interface';
 import chalk from 'chalk';
 import { calculateBoardIndex } from '../utils/calculateBoardIndex';
 import { displayBoard } from '../utils/displayBoard';

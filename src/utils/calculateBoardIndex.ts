@@ -1,4 +1,4 @@
-import { Coordinates } from '../types/playerData';
+import { Coordinates } from '../types/interfaces/playerData.interface';
 
 export function calculateBoardIndex(coordinate: Coordinates): {
   rowIndex: number;

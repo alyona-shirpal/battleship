@@ -1,6 +1,10 @@
 import inquirer from 'inquirer';
-import { Coordinates, PlayerData } from '../types/playerData';
-import { Message } from '../types/message.enum';
+import {
+  Coordinates,
+  PlayerDataInterface,
+} from '../types/interfaces/playerData.interface';
+import { Message } from '../types/enums/message.enum';
+import { StartChoice } from '../types/enums/startChoice.enum';
 
 export async function selectCell(isFirst: boolean): Promise<Coordinates> {
   return inquirer.prompt([
@@ -24,7 +28,7 @@ export async function selectCell(isFirst: boolean): Promise<Coordinates> {
 
 export async function startGameModel(
   firstPlayer: boolean,
-): Promise<Pick<PlayerData, 'name'>> {
+): Promise<Pick<PlayerDataInterface, 'name'>> {
   return inquirer.prompt([
     {
       type: 'input',
@@ -50,6 +54,16 @@ export async function hitShipModel(isFirst: boolean): Promise<Coordinates> {
       message: 'Now, hit the column (A-H):',
       validate: (input) =>
         /^[A-Ha-h]$/.test(input) ? true : Message.COLUMN_ERROR,
+    },
+  ]);
+}
+
+export async function startModel(): Promise<{ start: string }> {
+  return inquirer.prompt([
+    {
+      type: 'list',
+      name: 'start',
+      choices: [StartChoice.CONTINUE, StartChoice.NEW_GAME],
     },
   ]);
 }
