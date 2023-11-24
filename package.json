@@ -1,8 +1,9 @@
 {
-    "name": "backend-api",
+    "name": "battleship",
     "version": "1.0.0",
     "description": "",
     "license": "Proprietary",
+    "author": "alyona-shirpal",
     "scripts": {
         "dev": "nodemon",
         "start": "node ./dist/app.js",
@@ -12,7 +13,7 @@
         "fix": "eslint -c .eslintrc.fix.json --fix '{src,test}/**/*.{ts,js}'"
     },
     "_moduleAliases": {
-        "src": "build/src/"
+        "src": "dist/src/"
     },
     "devDependencies": {
         "@jaxin007/eslint-config-backend": "^1.0.4",
